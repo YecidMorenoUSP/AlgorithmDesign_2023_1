@@ -1,6 +1,10 @@
 #include <iostream>
 #include <stdio.h>
+#include <chrono>
 #include <stack>
+#include <queue>
+
+bool P0_RAND = false;
 
 using namespace std;
 
@@ -10,7 +14,7 @@ enum{
     _BEGIN = 2,
 };
 
-#define VERBOSE 2
+#define VERBOSE 1
 
 #define S0 "\x1B[37m\u25A0 " 
 #define S1 "\x1B[32m\u25A0 "
@@ -22,6 +26,15 @@ enum{
 #define set_M(A) iterate_M *M_ptr(point(i,j)) = A;
 
 #define SZ 8
+
+
+chrono::steady_clock::time_point __time[2];
+#define __tic __time[0] = std::chrono::steady_clock::now()
+#define __toc __time[1] = std::chrono::steady_clock::now()
+#define __getTime_us chrono::duration_cast<std::chrono::microseconds>(__time[1] - __time[0]).count()
+#define __getTime_ns chrono::duration_cast<std::chrono::nanoseconds>(__time[1] - __time[0]).count()
+#define __getTime_ms chrono::duration_cast<std::chrono::milliseconds>(__time[1] - __time[0]).count()
+
 
 typedef struct point
 {
@@ -114,11 +127,15 @@ bool isNextMoves(point p1, point p2){
     return false;
 }
 
-void findPath(point p, stack<point> &_path, int count = 1){
+void findPath_BT(point p, stack<point> &_path, int count = 1){
     
     point p_;
     static int solves = 0;
     static point p0;
+
+    if(count==1){
+        solves = 0;
+    }
 
     if(count == (SZ*SZ)){       
         if(isNextMoves(p,p0)){
@@ -138,7 +155,7 @@ void findPath(point p, stack<point> &_path, int count = 1){
         
         if(isOK(p_)&&!isVisited(p_)){ 
             
-            findPath(p_,_path,count+1);
+            findPath_BT(p_,_path,count+1);
 
             if(solves){
                 _path.push(p);
@@ -176,12 +193,12 @@ int h(point p){
     return count;
 }
 
-void findPathA(point p,stack<point> &_path, int count = 1){
-    point p_, p_next, p0 , p_max;
+void findPath_WD(point p,queue<point> &_path, int count = 1){
+    point p0, p_, p_next;
     int i;
     
     p0 = p;
-    p_next = p;
+    p_next = p0;
 
     for(i = 0 ; i < SZ*SZ ; i++){
 
@@ -199,7 +216,6 @@ void findPathA(point p,stack<point> &_path, int count = 1){
                 if(aux_h<=min_h){
                     min_h = aux_h;
                     p_next = p_;
-                    p_max = p_;
                 }
             }
         }
@@ -211,14 +227,38 @@ void findPathA(point p,stack<point> &_path, int count = 1){
     }
 
     if(i == SZ*SZ-1 && isNextMoves(p_next,p0)){
-        printf("Solution found!!!");
+        printf("Solution found!!!\n");
     }else{
-        _path = stack<point>();
+        _path = queue<point>();
     }
     
 }
 
-void animate(stack<point>  _path, bool sec = true, bool clear = false){
+void HandorfHeuristic(point &p0, queue<point> & _path_wd){
+    int xr,yr;
+
+    point p0_c = p0;
+
+    while(true){
+        if(P0_RAND){
+            p0 = point((rand())%SZ,(rand())%SZ);
+        }        
+        
+        
+        // system("clear");
+        // printf("Finding solution for :");
+        // printPoint(p0,(char *)"\n");       
+
+        _path_wd = queue<point>();
+        set_M(_NULL);
+        findPath_WD(p0,_path_wd); 
+        if(_path_wd.size()!=0){
+            break;
+        }
+    }
+}
+
+void animate(stack<point>  _path, bool sec = true, bool clear = false,char * txt = (char *)"M:"){
     static point p;
     static int count = 0;
     set_M(_NULL);
@@ -232,55 +272,111 @@ void animate(stack<point>  _path, bool sec = true, bool clear = false){
         if(sec){
             system("sleep .1");
             if(clear)system("clear");
+            printf("%s\n",txt);
             printM(p);    
         }        
 
         _path.pop();
     }          
-    if(!sec)printM(p);
+    if(!sec){
+        printf("%s\n",txt);
+        printM(p);
+    }
+}
+
+void animate(queue<point>  _path, bool sec = true, bool clear = false, char * txt = (char *)"M:"){
+    static point p;
+    static int count = 0;
+    set_M(_NULL);
+    count = 0;
+    
+    while (!_path.empty())
+    {           
+        p = _path.front();
+        *M_ptr(p) = ++count;        
+        
+        if(sec){
+            system("sleep .1");
+            if(clear)system("clear");
+            printf("%s\n",txt);
+            printM(p);    
+        }        
+
+        _path.pop();
+    }          
+    if(!sec){
+        printf("%s\n",txt);
+        printM(p);
+    }
 }
 
 int main(){
     
-    srand(time(NULL));
+    srand(time(NULL)); 
+    
+    int Nreps = 10;
+    char txt[200];
+    P0_RAND = false;
+    long int time_wd[Nreps],time_bt[Nreps];
 
-    stack<point> _path0;
-    stack<point> _path1;
+    stack<point> _path_bt;
+    queue<point> _path_wd;
 
-    system("clear");
     point p0(1,1);
-    
-    int xr,yr;
+    system("clear");
 
-    while(true){
-        xr = rand(),yr = rand();
-        p0 = point((xr)%SZ,(yr)%SZ);
+    for(int reps = 0 ; reps < Nreps ; reps++){       
+
+        _path_bt = stack<point>();
+        _path_wd = queue<point>();
         
-        system("clear");
-        printf("Finding solution for :");
-        printPoint(p0,(char *)"\n");       
+        __tic;
+            set_M(_NULL);
+            HandorfHeuristic(p0,_path_wd);   
+        __toc;
+        time_wd[reps] = __getTime_ms;
 
-        _path1 = stack<point>();
-        set_M(_NULL);
-        findPathA(p0,_path1); 
-        if(_path1.size()!=0){
-            break;
-        }
+        __tic;
+            set_M(_NULL);
+            findPath_BT(p0,_path_bt); 
+        __toc;
+        time_bt[reps] = __getTime_ms;
+            
+        #if VERBOSE >= 2
+            sprintf(txt,"\n>> Solution for the knight's beginning at point [%d,%d] using BackTrack",p0.x,p0.y);
+            animate(_path_bt,true,true,txt);
+
+            sprintf(txt,"\n>> Solution for the knight's beginning at point [%d,%d] using Handorf's heuristic",p0.x,p0.y);
+            animate(_path_wd,true,true,txt); 
+            
+            system("clear") ;
+        #endif
+
+            sprintf(txt,"\n>> Solution for the knight's beginning at point [%d,%d] using BackTrack",p0.x,p0.y);
+            animate(_path_bt,false,false,txt);
+
+            sprintf(txt,"\n>> Solution for the knight's beginning at point [%d,%d] using Handorf's heuristic",p0.x,p0.y);
+            animate(_path_wd,false,false,txt);
     }
-    
-    // p0 = point(1,1);
-    
-    set_M(_NULL);
-    findPath(p0,_path0); 
+
+        printf("\n\n>> Time results\n");
+        printf("     Point  | %15s | %15s\n","Time BT [ms]","Time WD [ms]");
+        for(int reps = 0 ; reps < Nreps ; reps++){
+            printf("    [%2d,%2d] |   %13ld |   %13ld\n",p0.x,p0.y,time_bt[reps],time_wd[reps]);
+        }
         
-    #if VERBOSE >= 2
-
-        animate(_path0,false,false);
-
-        animate(_path1,false,false); 
-         
-    #endif
-
+        printf("\n\n## Analysis of the algorithms\n\n"
+              "----------------Tempo------------------------\n"
+              "  >> BT :  O tempo de excecução tem poca variação, mas isso é devido que o numero de operações são sempre as mesmas, este é um algoritmo que vai ser executado sempre da mesma maneira e no mesmo ordem.\n" 
+              "  >> WD :  No caso deste algoritmo, cada uma das execuções é diferente, pois ela está ligada com a aleatoridade, e tenta encontrar uma soluçáo de maneira aleatoria, ingeniosamente isso decrementa o tempo notavelmente, no peor dos casos o maior tempo vai ser o mesmo do BT\n"
+              "\n"        
+              "----------------Soluções---------------------\n"
+              "  >> BT : Sempre é encontrada a mesma solução.\n"
+              "  >> WD : Soluções diferentes são quase sempre encontradas.\n"
+              "\n"      
+              );
+        
+        printf("\n");
     
     return 0;
 }
