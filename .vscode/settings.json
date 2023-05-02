@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "queue": "cpp",
-        "initializer_list": "cpp",
-        "chrono": "cpp"
-    }
-}
