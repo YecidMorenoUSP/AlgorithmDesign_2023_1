@@ -1,0 +1,59 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<list>
+
+#define DEBUG 1
+#define pii pair<int,int>
+
+using namespace std;
+
+vector< pii > A;
+vector<int> team;
+
+
+
+int N,M;
+int a,b;
+
+int main(){
+
+    scanf("%d %d",&N,&M);
+    A.resize(M);
+    team.resize(N+1);
+    fill(team.begin(),team.end(),0);
+
+    for(int i = 0 ; i < M ; i++){
+        scanf("%d %d",&A[i].first,&A[i].second);
+        if(A[i].first > A[i].first)
+         swap(A[i].first,A[i].second);
+    }
+
+    sort(A.begin(),A.end(),[](pair<int,int>& a, pair<int,int>& b){
+        return a.first < b.first;
+    });
+
+    
+
+    
+    #if DEBUG
+        for(auto& v : A){
+            printf("%d %d\n",v.first,v.second);
+        }
+
+        for(int i = 1 ; i <= N ; i++){
+            printf("%d ",i);
+        }
+        printf("\n");
+    #endif
+
+    for(int i = 1 ; i <= N ; i++){
+        printf("%d",((team[i]>=0)? team[i] : 2));
+        if(i!=N)printf(" ");
+        else    printf("\n");
+    }
+    
+    
+
+    return 0;
+}
