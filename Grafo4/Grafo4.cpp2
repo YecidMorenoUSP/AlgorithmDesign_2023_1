@@ -1,0 +1,70 @@
+#include<iostream>
+#include<vector>
+#include <bits/stdc++.h>
+
+
+using namespace std;
+
+#define INF 1001
+#define N_MAX 100+1
+
+int N_nodes;
+int S,T,C;
+
+int G[N_MAX][N_MAX];
+int FLOW[N_MAX][N_MAX];
+bool visited[N_MAX];
+
+vector<int> path(N_MAX,-1);
+
+int findBW(int s, int d, int depth = 0){  
+    
+    visited[s] = true;
+
+    for(int i = 1 ; i <= N_nodes ; i++){
+        if(visited[i]) continue;
+        
+        if(G[s][i] > 0 ){
+            if(i == d) printf(" OO ");
+            else findBW(i,d,depth+1);
+        }        
+
+    }
+    visited[s] = false;
+    return 0;
+
+}
+
+int main(){
+    static int count = 1;
+    
+    if(count == 2) return 0;
+
+    int n0,n1,bw;
+
+    scanf("%d",&N_nodes);
+    if(N_nodes == 0) return 0;
+
+    scanf("%d %d %d",&S,&T,&C);
+
+    for(int col = 0 ; col <= N_nodes ; col++)
+    for(int row = 0 ; row <= N_nodes ; row++)
+    G[col][row] = 0,FLOW[col][row] = -1,visited[col] = false;
+
+    for(int c = 0 ; c < C ; c ++){
+        scanf("%d %d %d",&n0,&n1,&bw);
+        G[n0][n1] = bw+G[n0][n1];
+        G[n1][n0] = bw+G[n1][n0];
+    }
+
+
+    bw = findBW(S,T);
+
+    printf("Network %d\n"
+           "The bandwidth is %d.\n\n",
+           count++,bw);
+
+    main();
+
+    return 0;
+}
