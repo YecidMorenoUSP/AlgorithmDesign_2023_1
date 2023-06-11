@@ -1,229 +1,390 @@
-#include <cstring>
 #include<iostream>
-#include<algorithm>
-#include<string>
-#include<vector>
+#include <bits/stdc++.h>
+
+#include "cube.h"
+
+#include "cube.cpp"
 
 using namespace std;
 
-#define for_ifj for (i = 0; i < 3; i++){\
-                for (f = 0; f < 6; f++){\
-                for (j = 0; j < 3; j++)\
+Cube cube;
+Cube cubeSolve;
+Cube cubeSolve_1;
 
-#define for_fij for (f = 0; f < 6; f++){\
-                for (i = 0; i < 3; i++){\
-                for (j = 0; j < 3; j++)\
+map< array_6_3_3 ,bool> visited;
+queue<char> seq;
+// array<array_6_3_3,2> V;
 
-#define for_ij  for (i = 0; i < 3; i++){\
-                for (j = 0; j < 3; j++)\
+void findSolve(Cube cube,queue<char> seq){
 
-#define for_i  for (i = 0; i < 3; i++)
-
-char colors[7] = "YWGBOR";
-char moves [13] = "UuDdFfBbRrLl";
-
-class Cube{
-    public:
+    vector<char> S;
+    S.push_back(0);
     
-    char DATA[6][3][3];
+    Cube cur = cube;
+    
+    int count_v  = 0;
+    int count_nv = 0;
 
-    Cube(){
-        memset(DATA,'O',sizeof DATA);
-        reset();
-    }
-
-    void reset(){
-        int f,i,j;
+    while (true){ 
         
-        for_fij{
-            DATA[f][i][j] = colors[f];
+        cur = cube;
+        for(auto& s : S){
+            cur.move(moves[(int)s]);
         }
+
+        if(cur == cubeSolve){
+            printf("Found\n");
+            for(auto& s : S){
+                printf("%4c",moves[(int)s]);
+            }
+            printf("\n");
+            printf("count_v  %d\n",count_v  );
+            printf("count_nv %d\n",count_nv );
+            break;
         }
+
+        if(visited[cur.DATA]) count_v++;
+        else{
+            visited[cur.DATA] = true;
+            count_nv++;
         }
+
+        
+        // printf("\n");        
+        
+
+        int sz = S.size();
+
+        int c = sz-1;
+        while (true){    
+            if((S[c]+1)%12==0){
+                S[c] = 0;
+                if(c == 0){
+                    S.push_back(0);
+                    break;
+                }
+                c--;
+                continue;
+            }else{
+                S[c]++;
+                break;
+            }
+            
+        }
+          
+                   
+        if(S.size()>=10) break;
+
     }
 
-    void draw(){
-        int f,i,j;
+    
+    
+}
 
-        for_ifj{
-            printf("%c",DATA[f][i][j]);   
-        }
-            printf("  ");  
-        }   
-            printf("\n");         
-        }
 
-        printf("\n");
-               
+void findSolve2(Cube cube,queue<char> seq){
+    
+    visited.clear();
+    list<vector<char>> S;
+
+    int r = 0;rand()%100;
+    for(int i = 0 ; i < 12 ; i++){
+        S.push_back({moves[ (i+r)%12  ]});
     }
+    
+    
+    
+    vector<char> cur_s;
+    Cube cur = cube;
+    
+    int H = 0;
+    int h = 0;
 
-    char aux[3];
-    void move(char m){
-        int i = 0, j = 0;
-        char a = ' ';
-        char aux3[3][3];
+    cur = cube;
+    visited[cur.DATA]=true;
 
-        if(m == 'U'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[2][0  ][i  ];
-                DATA[2][0  ][i  ] = DATA[4][0  ][i  ];
-                DATA[4][0  ][i  ] = DATA[3][2  ][2-i];
-                DATA[3][2  ][2-i] = DATA[5][0  ][i  ];
-                DATA[5][0  ][i  ] = a;
-            }
-        }else 
-        if(m == 'u'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[2][0  ][i  ];
-                DATA[2][0  ][i  ] = DATA[5][0  ][i  ];
-                DATA[5][0  ][i  ] = DATA[3][2  ][2-i];
-                DATA[3][2  ][2-i] = DATA[4][0  ][i  ];
-                DATA[4][0  ][i  ] = a;
+    int loops = 0;
+    while(!S.empty()){
+        // if(loops++ >= 4) break;
+
+        
+        cur_s = S.front();
+        if(cur_s.size()>8) break;
+
+        h = 0;
+        int count_h = 1;
+
+        cur = cube;
+        for(auto& val : cur_s){
+            cur.move(val);
+            h += (cur/cubeSolve)*count_h;
+            count_h++;
+        }
+        
+        // if(h>H){
+        //     H = h;
+        //     printf("H:  %5d  ",h);
+        //     for(auto& val : cur_s){
+        //         printf("%4c",val);
+        //     }
+        //     printf("\n");
+
+        // }else{
+        //     // visited[cur.DATA] = true;            
+        // }
+
+        if(visited[cur.DATA]==false){
+            visited[cur.DATA] = true;
+            
+            if(cur == cubeSolve){
+                printf("Found: \n");
+                for(auto& val : cur_s){
+                    printf("%4c",val);
+                }
+                printf("\n");
+                return;
             }
 
-        }else                
-        if(m == 'D'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[2][2  ][i  ];
-                DATA[2][2  ][i  ] = DATA[5][2  ][i  ];
-                DATA[5][2  ][i  ] = DATA[3][0  ][2-i];
-                DATA[3][0  ][2-i] = DATA[4][2  ][i  ];
-                DATA[4][2  ][i  ] = a;
-            }
-        }else                
-        if(m == 'd'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[2][2  ][i  ];
-                DATA[2][2  ][i  ] = DATA[4][2  ][i  ];
-                DATA[4][2  ][i  ] = DATA[3][0  ][2-i];
-                DATA[3][0  ][2-i] = DATA[5][2  ][i  ];
-                DATA[5][2  ][i  ] = a;
-            }
-        }else                
-        if(m == 'F'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][2  ][i  ];
-                DATA[0][2  ][i  ] = DATA[5][2-i][2  ];
-                DATA[5][2-i][2  ] = DATA[1][0  ][2-i];
-                DATA[1][0  ][2-i] = DATA[4][i  ][0  ];
-                DATA[4][i  ][0  ] = a;
-            }
-        }else                
-        if(m == 'f'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][2  ][i  ];
-                DATA[0][2  ][i  ] = DATA[4][i  ][0  ];
-                DATA[4][i  ][0  ] = DATA[1][0  ][2-i];
-                DATA[1][0  ][2-i] = DATA[5][2-i][2  ];
-                DATA[5][2-i][2  ] = a;
-            }
-        }else                
-        if(m == 'B'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][0  ][i  ];
-                DATA[0][0  ][i  ] = DATA[4][i  ][2  ];
-                DATA[4][i  ][2  ] = DATA[1][2  ][2-i];
-                DATA[1][2  ][2-i] = DATA[5][2-i][0  ];
-                DATA[5][2-i][0  ] = a;
-            }
-        }else                
-        if(m == 'b'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][0  ][i  ];
-                DATA[0][0  ][i  ] = DATA[5][2-i][0  ];
-                DATA[5][2-i][0  ] = DATA[1][2  ][2-i];
-                DATA[1][2  ][2-i] = DATA[4][i  ][2  ];
-                DATA[4][i  ][2  ] = a;
-            }
-        }else                
-        if(m == 'R'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][i  ][2  ];
-                DATA[0][i  ][2  ] = DATA[2][i  ][2  ];
-                DATA[2][i  ][2  ] = DATA[1][i  ][2  ];
-                DATA[1][i  ][2  ] = DATA[3][i  ][2  ];
-                DATA[3][i  ][2  ] = a;
-            }
-        }else                
-        if(m == 'r'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][i  ][2  ];
-                DATA[0][i  ][2  ] = DATA[3][i  ][2  ];
-                DATA[3][i  ][2  ] = DATA[1][i  ][2  ];
-                DATA[1][i  ][2  ] = DATA[2][i  ][2  ];
-                DATA[2][i  ][2  ] = a;
-            }
-        }else
-        if(m == 'L'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][i  ][0  ];
-                DATA[0][i  ][0  ] = DATA[3][i  ][0  ];
-                DATA[3][i  ][0  ] = DATA[1][i  ][0  ];
-                DATA[1][i  ][0  ] = DATA[2][i  ][0  ];
-                DATA[2][i  ][0  ] = a;
-            }
-        }else                
-        if(m == 'l'){
-            for(i = 0 ; i < 3 ; i++){
-                a = DATA[0][i  ][0  ];
-                DATA[0][i  ][0  ] = DATA[2][i  ][0  ];
-                DATA[2][i  ][0  ] = DATA[1][i  ][0  ];
-                DATA[1][i  ][0  ] = DATA[3][i  ][0  ];
-                DATA[3][i  ][0  ] = a;
-            }
+            int r = 0;rand()%100;
+            for(int i = 0 ; i < 12 ; i++){
+
+                cur_s = S.front();
+                cur_s.push_back(moves[ (i+r)%12 ]);
+                            
+                S.push_back(cur_s);           
+
+            }       
+
         }else{
-            return;
+               
         }
-                
 
-
-
-        int face = 0 , rotate = 0;
         
-             if(m == 'U') face = 0, rotate= 1;
-        else if(m == 'u') face = 0, rotate=-1;
-        else if(m == 'D') face = 1, rotate= 1;
-        else if(m == 'd') face = 1, rotate=-1;
-        else if(m == 'F') face = 2, rotate= 1;
-        else if(m == 'f') face = 2, rotate=-1;
-        else if(m == 'B') face = 3, rotate= 1;
-        else if(m == 'b') face = 3, rotate=-1;
-        else if(m == 'R') face = 4, rotate= 1;
-        else if(m == 'r') face = 4, rotate=-1;
-        else if(m == 'L') face = 5, rotate= 1;
-        else if(m == 'l') face = 5, rotate=-1;
+        S.pop_front();
+        
+    }
+    
 
+
+
+
+}
+
+
+int heuristic(Cube a,Cube b){
+    int res = 0;
+    int f,i,j;    
+    for (f = 0; f < 6; f++){ 
+        for (i = 0; i < 3; i++){ 
+            for (j = 0; j < 3; j++){
+                if(b.DATA[f][i][j] == 'X' ||
+                   a.DATA[f][i][j] == 'X'  ) continue;
+
+                if(a.DATA[f][i][j] != b.DATA[f][i][j])res++;
+            }
+        }
+    }
+    return res;
+}
+
+list<vector<char>> S;
+int step = 0;
+
+void findSolve3(){
  
-        memcpy(aux3,DATA[face],sizeof aux3);
-        for(i = 0 ; i < 3 ; i++){
-            for(j = 0 ; j < 3 ; j++){
-                if(rotate ==  1) DATA[face][i][j] = aux3[2-j][i];
-                else DATA[face][2-j][i] = aux3[i][j];
-            }                    
+    vector<char> cur_s;
+    static int H = 99999999;
+    Cube cur = cube;
+    int h = 0;
+
+    
+
+    static bool __init = true;
+    if(__init){
+        S.clear();
+        for(int i = 0 ; i < 12 ; i++){
+            vector<char> s;s.push_back(moves[i]);
+            S.push_back(s);
+        }
+
+        __init = false;
+    }
+
+    bool omit = false;
+    h = heuristic(cur,cubeSolve_1);
+    if(h==0 && step != -1){
+        printf("Eureka");
+        omit = true;
+    }
+    
+    while (true){
+        
+    if(step==-1) break;
+
+    if(S.size() == 0 && h!=0){
+        printf("END\n");
+        break;      
+    }
+
+
+    if(!omit){
+        cur_s = S.front();    
+        cur = cube;   
+        for(auto& v : cur_s){
+            cur.move(v);
+        }
+    }
+    
+    
+    if(visited[cur.DATA] == false || omit == true){
+        visited[cur.DATA] = true;
+
+        if(omit){
+            cur = cube;
+        }
+        
+        if((h = heuristic(cur,cubeSolve_1)) == 0){
+
+            printf("H(%4d): ",h);
+            for(auto& v : cur_s){
+                printf("%c ",v);
+            }
+            printf("\n");
+
+            step++;
+            // CRUZ
+            if(step == 1){
+                // strcpy(moves  ,"RUFurLlBbdfD");
+                // strcpy(moves_i,"rufURlLbBDFd");
+                cubeSolve_1.DATA[1][0][1] = 'W'; //W
+                cubeSolve_1.DATA[2][2][1] = 'G'; //G
+            }
+            else if(step == 2){
+                cubeSolve_1.DATA[1][2][1] = 'W'; //W
+                cubeSolve_1.DATA[3][0][1] = 'B'; //B
+            }
+            else if(step == 3){
+                cubeSolve_1.DATA[1][1][2] = 'W'; //W
+                cubeSolve_1.DATA[4][2][1] = 'O'; //O
+            }
+            else if(step == 4){
+                cubeSolve_1.DATA[1][1][0] = 'W'; //W
+                cubeSolve_1.DATA[5][2][1] = 'R'; //R
+            }else if(step == 5) step = -1;
+            // EZQUINAS
+            else if(step == 5){
+                cubeSolve_1.DATA[1][0][2] = 'W';
+                cubeSolve_1.DATA[2][2][2] = 'G';
+                cubeSolve_1.DATA[4][2][0] = 'O';
+                cubeSolve_1.DATA[2][1][2] = 'G';
+                cubeSolve_1.DATA[4][1][0] = 'O';
+            }
+            else if(step == 6){
+                cubeSolve_1.DATA[1][0][0] = 'W';
+                cubeSolve_1.DATA[2][2][0] = 'G';
+                cubeSolve_1.DATA[5][2][2] = 'R';
+                cubeSolve_1.DATA[2][1][0] = 'G';
+                cubeSolve_1.DATA[5][1][2] = 'R';
+            }
+            else if(step == 7){
+                cubeSolve_1.DATA[1][2][2] = 'W';
+                cubeSolve_1.DATA[3][0][2] = 'B';
+                cubeSolve_1.DATA[4][2][2] = 'O';
+            }
+            else if(step == 8){
+                cubeSolve_1.DATA[1][2][2] = 'W';
+                cubeSolve_1.DATA[3][0][0] = 'B';
+                cubeSolve_1.DATA[5][2][0] = 'R';
+            }
+            // ARISTAS
+            // FIN
+            else{
+                step = -1;
+            }
+                        
+             
+            cube = cur;
+            // cube.draw();
+            __init = true;
+            // visited.clear();
+
+            findSolve3();
+            break;
+        }
+
+        for(int i = 0 ; i < 12 ; i++){
+            char c = moves[ i ];           
+            
+            if((cur_s.size()+1) > 10) break;;
+            
+            vector<char> cur_s2 = cur_s;
+            cur_s2.push_back(c);
+
+            S.push_back(cur_s2);
+
         }
 
     }
+    
+    
 
-};
+    S.pop_front();
+
+    }
+
+}
+
+void initSolves(){
+    cubeSolve.reset();
+    cubeSolve_1.reset();
+    
+    int f,i,j; 
+    for (f = 0; f < 6; f++){ 
+        for (i = 0; i < 3; i++){ 
+            for (j = 0; j < 3; j++){
+                
+                if(f!=1){
+                    cubeSolve_1.DATA[f][i][j] = 'X';
+                }
+
+            }
+        }
+    }
+
+    cubeSolve_1.DATA[1][0][0] = 'X';
+    cubeSolve_1.DATA[1][0][2] = 'X';
+    cubeSolve_1.DATA[1][2][0] = 'X';
+    cubeSolve_1.DATA[1][2][2] = 'X';
+    
+    cubeSolve_1.DATA[1][0][1] = 'X'; //W
+    cubeSolve_1.DATA[1][2][1] = 'X'; //W
+    cubeSolve_1.DATA[1][1][2] = 'X'; //W
+    cubeSolve_1.DATA[1][1][0] = 'X'; //W    
+    
+
+    cubeSolve_1.DATA[2][2][1] = 'X'; //G
+    cubeSolve_1.DATA[3][0][1] = 'X'; //B
+    cubeSolve_1.DATA[4][2][1] = 'X'; //O
+    cubeSolve_1.DATA[5][2][1] = 'X'; //R
+
+    
+
+}
 
 int main(){
-
-    Cube cube;
-    cube.reset();
-    cube.draw();
+    srand(time(NULL));
+    initSolves();
     
-    char sec[]  = {"bruRUB"};
-    char sec2[] = {"burURB"};
+    cube.reset();  
+    readSTD(cube);
+    cube.draw(); 
+    
+    findSolve2(cube,seq);
+    
+    visited.clear();
+    visited[cube.DATA] = true;
+    // findSolve3();
 
-
-    for(auto& a : sec){
-        cube.move(a);
-    }
-    cube.draw();
-
-    for(auto& a : sec2){
-        cube.move(a);
-    }
     cube.draw();
 
     return 0;
