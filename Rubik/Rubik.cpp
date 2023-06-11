@@ -62,131 +62,120 @@ class Cube{
         int i = 0, j = 0;
         char a = ' ';
         char aux3[3][3];
-        switch (m){
-            case 'U':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[2][0  ][i  ];
-                    DATA[2][0  ][i  ] = DATA[4][0  ][i  ];
-                    DATA[4][0  ][i  ] = DATA[3][2  ][2-i];
-                    DATA[3][2  ][2-i] = DATA[5][0  ][i  ];
-                    DATA[5][0  ][i  ] = a;
-                }
-                break;
-            
-            case 'u':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[2][0  ][i  ];
-                    DATA[2][0  ][i  ] = DATA[5][0  ][i  ];
-                    DATA[5][0  ][i  ] = DATA[3][2  ][2-i];
-                    DATA[3][2  ][2-i] = DATA[4][0  ][i  ];
-                    DATA[4][0  ][i  ] = a;
-                }
-                break;
-            
-            case 'D':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[2][2  ][i  ];
-                    DATA[2][2  ][i  ] = DATA[5][2  ][i  ];
-                    DATA[5][2  ][i  ] = DATA[3][0  ][2-i];
-                    DATA[3][0  ][2-i] = DATA[4][2  ][i  ];
-                    DATA[4][2  ][i  ] = a;
-                }
-                break;
-            
-            case 'd':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[2][2  ][i  ];
-                    DATA[2][2  ][i  ] = DATA[4][2  ][i  ];
-                    DATA[4][2  ][i  ] = DATA[3][0  ][2-i];
-                    DATA[3][0  ][2-i] = DATA[5][2  ][i  ];
-                    DATA[5][2  ][i  ] = a;
-                }
-                break;
-            
-            
-            case 'F':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][2  ][i  ];
-                    DATA[0][2  ][i  ] = DATA[5][2-i][2  ];
-                    DATA[5][2-i][2  ] = DATA[1][0  ][2-i];
-                    DATA[1][0  ][2-i] = DATA[4][i  ][0  ];
-                    DATA[4][i  ][0  ] = a;
-                }
-                break;
-            
-            case 'f':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][2  ][i  ];
-                    DATA[0][2  ][i  ] = DATA[4][i  ][0  ];
-                    DATA[4][i  ][0  ] = DATA[1][0  ][2-i];
-                    DATA[1][0  ][2-i] = DATA[5][2-i][2  ];
-                    DATA[5][2-i][2  ] = a;
-                }
-                break;
-            
-            case 'B':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][0  ][i  ];
-                    DATA[0][0  ][i  ] = DATA[4][i  ][2  ];
-                    DATA[4][i  ][2  ] = DATA[1][2  ][2-i];
-                    DATA[1][2  ][2-i] = DATA[5][2-i][0  ];
-                    DATA[5][2-i][0  ] = a;
-                }
-                break;
-            
-            case 'b':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][0  ][i  ];
-                    DATA[0][0  ][i  ] = DATA[5][2-i][0  ];
-                    DATA[5][2-i][0  ] = DATA[1][2  ][2-i];
-                    DATA[1][2  ][2-i] = DATA[4][i  ][2  ];
-                    DATA[4][i  ][2  ] = a;
-                }
-                break;
-            
-            case 'R':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][i  ][2  ];
-                    DATA[0][i  ][2  ] = DATA[2][i  ][2  ];
-                    DATA[2][i  ][2  ] = DATA[1][i  ][2  ];
-                    DATA[1][i  ][2  ] = DATA[3][i  ][2  ];
-                    DATA[3][i  ][2  ] = a;
-                }
-                break;
-            
-            case 'r':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][i  ][2  ];
-                    DATA[0][i  ][2  ] = DATA[3][i  ][2  ];
-                    DATA[3][i  ][2  ] = DATA[1][i  ][2  ];
-                    DATA[1][i  ][2  ] = DATA[2][i  ][2  ];
-                    DATA[2][i  ][2  ] = a;
-                }
-                break;
-            
-            case 'L':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][i  ][0  ];
-                    DATA[0][i  ][0  ] = DATA[3][i  ][0  ];
-                    DATA[3][i  ][0  ] = DATA[1][i  ][0  ];
-                    DATA[1][i  ][0  ] = DATA[2][i  ][0  ];
-                    DATA[2][i  ][0  ] = a;
-                }
-                break;
 
-            case 'l':
-                for(i = 0 ; i < 3 ; i++){
-                    a = DATA[0][i  ][0  ];
-                    DATA[0][i  ][0  ] = DATA[2][i  ][0  ];
-                    DATA[2][i  ][0  ] = DATA[1][i  ][0  ];
-                    DATA[1][i  ][0  ] = DATA[3][i  ][0  ];
-                    DATA[3][i  ][0  ] = a;
-                }
-                break;
+        if(m == 'U'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[2][0  ][i  ];
+                DATA[2][0  ][i  ] = DATA[4][0  ][i  ];
+                DATA[4][0  ][i  ] = DATA[3][2  ][2-i];
+                DATA[3][2  ][2-i] = DATA[5][0  ][i  ];
+                DATA[5][0  ][i  ] = a;
+            }
+        }else 
+        if(m == 'u'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[2][0  ][i  ];
+                DATA[2][0  ][i  ] = DATA[5][0  ][i  ];
+                DATA[5][0  ][i  ] = DATA[3][2  ][2-i];
+                DATA[3][2  ][2-i] = DATA[4][0  ][i  ];
+                DATA[4][0  ][i  ] = a;
+            }
 
-            default:
-                break;
+        }else                
+        if(m == 'D'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[2][2  ][i  ];
+                DATA[2][2  ][i  ] = DATA[5][2  ][i  ];
+                DATA[5][2  ][i  ] = DATA[3][0  ][2-i];
+                DATA[3][0  ][2-i] = DATA[4][2  ][i  ];
+                DATA[4][2  ][i  ] = a;
+            }
+        }else                
+        if(m == 'd'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[2][2  ][i  ];
+                DATA[2][2  ][i  ] = DATA[4][2  ][i  ];
+                DATA[4][2  ][i  ] = DATA[3][0  ][2-i];
+                DATA[3][0  ][2-i] = DATA[5][2  ][i  ];
+                DATA[5][2  ][i  ] = a;
+            }
+        }else                
+        if(m == 'F'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][2  ][i  ];
+                DATA[0][2  ][i  ] = DATA[5][2-i][2  ];
+                DATA[5][2-i][2  ] = DATA[1][0  ][2-i];
+                DATA[1][0  ][2-i] = DATA[4][i  ][0  ];
+                DATA[4][i  ][0  ] = a;
+            }
+        }else                
+        if(m == 'f'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][2  ][i  ];
+                DATA[0][2  ][i  ] = DATA[4][i  ][0  ];
+                DATA[4][i  ][0  ] = DATA[1][0  ][2-i];
+                DATA[1][0  ][2-i] = DATA[5][2-i][2  ];
+                DATA[5][2-i][2  ] = a;
+            }
+        }else                
+        if(m == 'B'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][0  ][i  ];
+                DATA[0][0  ][i  ] = DATA[4][i  ][2  ];
+                DATA[4][i  ][2  ] = DATA[1][2  ][2-i];
+                DATA[1][2  ][2-i] = DATA[5][2-i][0  ];
+                DATA[5][2-i][0  ] = a;
+            }
+        }else                
+        if(m == 'b'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][0  ][i  ];
+                DATA[0][0  ][i  ] = DATA[5][2-i][0  ];
+                DATA[5][2-i][0  ] = DATA[1][2  ][2-i];
+                DATA[1][2  ][2-i] = DATA[4][i  ][2  ];
+                DATA[4][i  ][2  ] = a;
+            }
+        }else                
+        if(m == 'R'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][i  ][2  ];
+                DATA[0][i  ][2  ] = DATA[2][i  ][2  ];
+                DATA[2][i  ][2  ] = DATA[1][i  ][2  ];
+                DATA[1][i  ][2  ] = DATA[3][i  ][2  ];
+                DATA[3][i  ][2  ] = a;
+            }
+        }else                
+        if(m == 'r'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][i  ][2  ];
+                DATA[0][i  ][2  ] = DATA[3][i  ][2  ];
+                DATA[3][i  ][2  ] = DATA[1][i  ][2  ];
+                DATA[1][i  ][2  ] = DATA[2][i  ][2  ];
+                DATA[2][i  ][2  ] = a;
+            }
+        }else
+        if(m == 'L'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][i  ][0  ];
+                DATA[0][i  ][0  ] = DATA[3][i  ][0  ];
+                DATA[3][i  ][0  ] = DATA[1][i  ][0  ];
+                DATA[1][i  ][0  ] = DATA[2][i  ][0  ];
+                DATA[2][i  ][0  ] = a;
+            }
+        }else                
+        if(m == 'l'){
+            for(i = 0 ; i < 3 ; i++){
+                a = DATA[0][i  ][0  ];
+                DATA[0][i  ][0  ] = DATA[2][i  ][0  ];
+                DATA[2][i  ][0  ] = DATA[1][i  ][0  ];
+                DATA[1][i  ][0  ] = DATA[3][i  ][0  ];
+                DATA[3][i  ][0  ] = a;
+            }
+        }else{
+            return;
         }
+                
+
 
 
         int face = 0 , rotate = 0;
@@ -228,13 +217,11 @@ int main(){
 
 
     for(auto& a : sec){
-        if(a=='\0') break;
         cube.move(a);
     }
     cube.draw();
 
     for(auto& a : sec2){
-        if(a=='\0') break;
         cube.move(a);
     }
     cube.draw();
